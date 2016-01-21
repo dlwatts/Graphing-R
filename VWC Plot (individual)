@@ -1,0 +1,24 @@
+allVWCplot<- function(file.path){
+	setwd(file.path)	
+	temp<-list.files(pattern="*.csv")	#lists all the csv files in the folder
+	#starting loop to read in each file listed under (temp)
+	for (i in 1:length(temp)){ 
+		v<-read.csv(temp[i], header=F,  
+		colClasses=c(rep("NULL", 5), NA, rep("NULL", 5), NA, rep("NULL", 5), NA, rep("NULL", 2), NA, rep("NULL", 3), NA, "NULL", NA, "NULL"), 
+		col.names=c(rep("A", 5), "EC", rep("A", 5), "capacitance", rep("A", 5), "timestamp", rep("A", 2), "temperature", rep("A", 3), "humidity", "A", "light", "A"))  	#reading in the file, deleting some of the data, giving them headers (more kept for easing coding of other values)
+		v1<-v[with(v, order(timestamp)),] #reordering the data for time
+		name<-sub("\\..*","", temp[i])	#unlisting the .csv from the file name for prettier titles
+		png(paste("VWC_", name,".png", sep=""), width=800, height=480)	#create a blank file to write the graphs into
+		tit<-paste("Sensor ", name, sep="")	#title name for each sensor
+		tm<-v1$timestamp			#for coding simplicity, defining the time
+		cap<-(log(v1$capacitance)^2)*1.3104+15.541*log(v1$capacitance)+45.654		#converting capacitance to vwc
+		cap[cap<2]<-NA	#getting rid of "floor" points
+		t1<-min(tm);t2<-max(tm)					#min and max of the time stamps for this dataset
+		y1=0; y2=max(cap, na.rm=T)			#choosing the y-axis limits
+		plot(0,0, xlim=c(t1, t2), ylim=c(y1,y2), type="n", ylab="volumnetric water content (%)", xaxt="n", xlab="", main=tit)	#calling a blank plot
+		ts.axis<-as.POSIXct(seq(t1, t2, 500000), origin='1970-01-01')		#making labels for a pretty time series x-axis
+		axis.POSIXct(1, at=ts.axis, labels=format(ts.axis, "%m/%d"), las=2)	#drawing the pretty x-axis
+		points(cap~tm, col="blue", pch=20)		#drawing in the vwc
+		dev.off()		#turning off the quartz device so we can start the next file
+		}
+		}
