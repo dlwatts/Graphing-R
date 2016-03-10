@@ -1,4 +1,5 @@
-#this is for multiple sensors download & graph. For multiple sensors, see.....
+#this is for multiple sensors download & graph. This is modified specifically for the valve beta test. 
+#Permisions for url and subset under "Reading in Valve List" may have to be modified for this to run.
 
 
 #---------------Needed Libraries---------------

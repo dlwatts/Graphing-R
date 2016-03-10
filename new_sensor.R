@@ -1,4 +1,4 @@
-#this is a single sensor download & graph. For multiple sensors, see.....
+#this is a single sensor download & graph. For multiple sensors, see multSensorsGraph.R
 
 rm(list = ls())
 
@@ -8,15 +8,14 @@ library(jsonlite)
 
 #---------------Inputs---------------
 
-wd <-"/Users/Hal/......"
+#directory <-"/Users/Hal/......"
 
-sensors <- "a6ebe"
-
-readings <- 100
-offset <- 0
-save.data <- ("yes") #"no"
-save.graph <- ("yes") #"no"
-graph.var <- "electrical_conductivity"
+#sensors <- "a6ebe"
+#readings <- 100
+#offset <- 0
+#save.data <- ("yes") #"no"
+#save.graph <- ("yes") #"no"
+#graph.var <- "electrical_conductivity"
 # "battery", "humidity", "temperature", "electrical_conductivity", "light", "capacitance"
 
 
@@ -28,12 +27,13 @@ graph.var <- "electrical_conductivity"
 
 single_graph <- function(sensors, graph.var=graph.var, save.file="yes", save.graph="yes", directory){
 	setwd(directory)
+	datafile <- paste(sensors, ".csv", sep="")
 	if (!file.exists(datafile)) {
-		link = paste('http://readings.newton.edyn.com/devices/20000c2a690', sensors, '/readings?limit=', readings, '&offset=', offset, sep="" )
+		link = paste('http://readings.newton.edyn.com/devices/', sensors, '/readings?limit=', readings, '&offset=', offset, sep="" )
  		jsonData <- fromJSON(link)
  		 data <- jsonData$response
  	 } else {
- 	 	data <- read.csv(paste(sensors, ".csv", sep=""))
+ 	 	data <- read.csv(datafile)
  	 }
 	tit<-paste(sensors, graph.var, sep=" ")	#title name for graph
 	color.list <- c(rep(NA, 5), "black", "lightblue", "red", "green", "yellow", rep(NA, 17), "blue3")
@@ -59,9 +59,9 @@ single_graph <- function(sensors, graph.var=graph.var, save.file="yes", save.gra
 	axis.POSIXct(1, at=ts.axis, labels = format(ts.axis, "%m/%d %H:%M"), las = 2)
 	if(save.graph == "yes"){dev.off()}
 	if(save.file == "yes"){
-	write.csv(data, paste(sensors, ".csv", ), row.names = FALSE, quote = FALSE)	
+	write.csv(data, datafile, row.names = FALSE, quote = FALSE)	
 	}
 }
 
-single_graph(data = a6ebe, "capacitance")
+
 

@@ -1,5 +1,6 @@
 #this is for multiple sensors download & graph. It assumes you need to download the data. Not recommended for passing really large (>1month) datasets.
 #defaults to 2 immediate weeks download
+#For a single sensor, see new_sensor.R
 
 #---------------Needed Libraries---------------
 library(jsonlite)
